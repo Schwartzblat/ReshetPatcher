@@ -1,0 +1,28 @@
+pluginManagement {
+    repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        mavenCentral()
+    }
+}
+
+// One block only. makoPatcher declares dependencyResolutionManagement twice
+// (the second added for jitpack); keeping every repository in a single block
+// avoids depending on how Gradle merges the two.
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }   // ArtHooks: com.github.Schwartzblat:ArtHooks
+    }
+}
+
+rootProject.name = "smali_generator"
+include ':app'
+include ':theo-stubs'

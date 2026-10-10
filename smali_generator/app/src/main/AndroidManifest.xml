@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- stitch MERGES this manifest into Reshet's at patch time: declare any
+         activity/service/receiver or <uses-permission> the patch adds here.
+
+         Do NOT declare the provider that starts the patch. stitch adds it
+         itself from main.py's PROVIDER_CLASS:
+           <provider android:name="com.smali_generator.InitProviderReshet"
+                     android:authorities="com.applicaster.iReshet.com.smali_generator.InitProviderReshet"
+                     android:exported="false"
+                     android:initOrder="2147483647"/> -->
+    <application tools:ignore="MissingApplicationIcon" />
+
+</manifest>

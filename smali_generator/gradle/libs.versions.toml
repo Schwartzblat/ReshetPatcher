@@ -1,0 +1,13 @@
+[versions]
+agp = "8.10.0"
+annotationJvm = "1.9.1"
+arthooks = "1.1.2"
+okhttp = "4.12.0"
+[libraries]
+androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotationJvm" }
+arthooks = { module = "com.github.Schwartzblat:ArtHooks", version.ref = "arthooks" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+

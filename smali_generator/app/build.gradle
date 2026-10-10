@@ -1,0 +1,70 @@
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+android {
+    // Kept as com.smali_generator, the same as makoPatcher: stitch looks up the
+    // provider class by FQN (com.smali_generator.InitProviderReshet), and the
+    // module's resource table is shipped as assets/stitch/<this package>.apk.
+    namespace 'com.smali_generator'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "com.smali_generator"
+        // This module is never installed on its own -- stitch injects its dex,
+        // jni libs, assets and resource table into the target APK -- so these
+        // values are cosmetic. The target app's own <uses-sdk> stands.
+        minSdk 33
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk 36
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            // Must stay off: stitch injects this module's dex as-is, and R8
+            // would rename the provider class the patched manifest points at.
+            minifyEnabled false
+        }
+    }
+
+    lint {
+        // Before stitch substitutes the artifactory, Class.forName() in the
+        // patches holds a placeholder string instead of a class name, and
+        // lintVital (part of assembleRelease) crashes trying to parse it.
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation libs.arthooks
+    implementation libs.androidx.annotation.jvm
+    // Resolved against the app's own OkHttp 4.12 at runtime, never packaged:
+    // stitch injects this module's dex into the target, which already has it.
+    compileOnly libs.okhttp
+    // THEOplayer API stand-ins, same arrangement as OkHttp.
+    compileOnly project(':theo-stubs')
+}
+
+// Copies the built APK to <module>/smali_generator.apk, where stitch's
+// prepare_smali() expects it (stitch.common.SMALI_GENERATOR_OUTPUT_PATH).
+tasks.whenTaskAdded { task ->
+    if (task.name == 'assembleRelease') {
+        task.doLast {
+            def apkDir = "$buildDir/outputs/apk/release"
+            def apkFile = fileTree(dir: apkDir, includes: ["*.apk"]).singleFile
+            def destinationDir = "./"
+
+            mkdir(destinationDir)
+            copy {
+                from apkFile
+                into "$destinationDir"
+            }
+            def output_apk = file("$destinationDir/${apkFile.name}")
+            output_apk.renameTo("${destinationDir}/smali_generator.apk")
+            println "APK moved to $destinationDir"
+        }
+    }
+}

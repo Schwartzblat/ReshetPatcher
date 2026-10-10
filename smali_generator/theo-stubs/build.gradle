@@ -1,0 +1,12 @@
+// Compile-time stand-ins for the THEOplayer 11.6.1 public API the live hooks use.
+// The app's module depends on these compileOnly: they are never packaged, and at
+// runtime every reference resolves against the target app's own THEOplayer SDK.
+// Signatures are copied from the target's smali; keep them exact.
+plugins {
+    id 'java-library'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
